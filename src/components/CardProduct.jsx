@@ -4,6 +4,7 @@ import { FontSize, FontFamily } from "../../GlobalStyles";
 import { Card } from "react-native-paper";
 import { IconButton } from "react-native-paper";
 
+//Lista de productos de prueba
 const ListScrollView = () => {
   const data = [
     { id: 1, title: "Headphones", price: "$300.00" },

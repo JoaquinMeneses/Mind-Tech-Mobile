@@ -4,6 +4,7 @@ import Header from "./../components/Header";
 import { View, ScrollView } from "react-native";
 import CarouselHome from "../components/CarouselHome";
 import FeaturedProducts from "../components/FeaturedProducts";
+import TabNavigator from "../navigations/TabNavigator";
 
 function Home() {
   return (

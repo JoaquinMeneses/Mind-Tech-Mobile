@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
+//Imagenes del carousel en Home
 function CarouselHeader() {
     const images = [
       { id: 1, source: require('./../../assets/images/rectangle-32.png') },

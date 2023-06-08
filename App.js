@@ -2,8 +2,17 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import TabNavigator from "./src/navigations/TabNavigator";
+import { createStackNavigator } from "@react-navigation/stack";
+import Register from "./src/screens/Register";
 
 
+const Stack = createStackNavigator();
+
+const MainTabNavigator = () => {
+  return (
+    <TabNavigator />
+  );
+};
 
 const App = () => {
   const [fontsLoaded, error] = useFonts({
@@ -18,14 +27,13 @@ const App = () => {
     return null;
   }
 
-
   return (
-    <>
-      <NavigationContainer>
-        <TabNavigator />
-      </NavigationContainer>
-    </>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="TabNavigator" component={MainTabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 export default App;
-

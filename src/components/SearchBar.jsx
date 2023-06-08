@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Searchbar } from 'react-native-paper';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { Color } from "../../GlobalStyles";
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
