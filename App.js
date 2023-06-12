@@ -1,18 +1,19 @@
 import * as React from "react";
+import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import TabNavigator from "./src/navigations/TabNavigator";
 import { createStackNavigator } from "@react-navigation/stack";
 import Register from "./src/screens/Register";
+import Details from "./src/screens/Details";
 
 
-const Stack = createStackNavigator();
 
-const MainTabNavigator = () => {
-  return (
-    <TabNavigator />
-  );
-};
+// const MainTabNavigator = () => {
+//   return (
+//     <TabNavigator />
+//   );
+// };
 
 const App = () => {
   const [fontsLoaded, error] = useFonts({
@@ -26,14 +27,17 @@ const App = () => {
   if (!fontsLoaded && !error) {
     return null;
   }
+  const Stack = createStackNavigator();
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="TabNavigator" component={MainTabNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+      <Stack.Navigator initialRouteName="TabNavigator" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="TabNavigator" component={TabNavigator}  />
+        <Stack.Screen name="Register" component={Register}  />
+        <Stack.Screen name="Details" component={Details} />
       </Stack.Navigator>
     </NavigationContainer>
+    //<AppNavigator />
   );
 };
 export default App;
