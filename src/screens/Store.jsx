@@ -1,14 +1,15 @@
 import React from "react";
 import Header from "./../components/Header";
 import { View, StyleSheet, Dimensions } from "react-native";
-import ListScrollView from "../components/FlatListHome";
+import TabListStore from "../components/TabListStore";
 
-function Home() {
+
+function Store() {
   return (
 
     <View style={styles.containerHome}>
       <Header />
-      <ListScrollView/>
+      <TabListStore />
     </View>
   );
 }
@@ -23,4 +24,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default Home;
+export default Store;

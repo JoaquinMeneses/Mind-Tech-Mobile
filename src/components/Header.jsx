@@ -14,9 +14,8 @@ function Header() {
 const styles = StyleSheet.create({
     headerContainer: {
       width: Dimensions.get('window').width,
-      top: 60,
+      top: 50,
       paddingLeft: 20,
-      marginBottom: 10,
     },
     mindtech: {
         letterSpacing: 8,

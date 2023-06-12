@@ -1,12 +1,10 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import { Searchbar } from 'react-native-paper';
 import { Dimensions, StyleSheet, View } from 'react-native';
 
 const SearchBar = () => {
-  const [searchQuery, setSearchQuery] = React.useState('');
-
+  const [searchQuery, setSearchQuery] = useState('');
   const onChangeSearch = (query) => setSearchQuery(query);
-
 
   return (
     <View style={styles.searchContainer}>
@@ -27,7 +25,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   search: {
-    top: 25,
+    top: 10,
     width: '90%',
     backgroundColor: "#fff",
   },

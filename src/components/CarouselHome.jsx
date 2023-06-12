@@ -44,7 +44,7 @@ function CarouselHeader() {
 
   const styles = StyleSheet.create({
     container: {
-        top: 45,
+        top: 25,
         width: Dimensions.get('window').width,
         alignItems: 'center',
     },
@@ -62,12 +62,12 @@ function CarouselHeader() {
     paginationContainer: {
         position: 'absolute',
         bottom: -10,
+        
       },
       dotStyle: {
         width: 10,
         height: 10,
-        borderRadius: 5,
-        marginHorizontal: 2,
+        borderRadius: 5,    
         backgroundColor: '#00a524da',
       },
       inactiveDotStyle: {
