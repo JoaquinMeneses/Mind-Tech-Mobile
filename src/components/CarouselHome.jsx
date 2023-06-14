@@ -5,8 +5,8 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 //Imagenes del carousel en Home
 function CarouselHeader() {
     const images = [
-      { id: 1, source: require('./../../assets/images/rectangle-32.png') },
-      { id: 2, source: require('./../../assets/images/rectangle-32.png') },
+      { id: 1, source: { uri: 'https://i.postimg.cc/4ynnNt8S/gamer.png' } },
+      { id: 2, source: { uri: 'https://i.postimg.cc/1tvfQMKF/pc.png' } },
       { id: 3, source: require('./../../assets/images/rectangle-32.png') },
     ];
 

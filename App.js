@@ -6,14 +6,8 @@ import TabNavigator from "./src/navigations/TabNavigator";
 import { createStackNavigator } from "@react-navigation/stack";
 import Register from "./src/screens/Register";
 import Details from "./src/screens/Details";
+import MyCart from "./src/components/MyCart";
 
-
-
-// const MainTabNavigator = () => {
-//   return (
-//     <TabNavigator />
-//   );
-// };
 
 const App = () => {
   const [fontsLoaded, error] = useFonts({
@@ -35,9 +29,9 @@ const App = () => {
         <Stack.Screen name="TabNavigator" component={TabNavigator}  />
         <Stack.Screen name="Register" component={Register}  />
         <Stack.Screen name="Details" component={Details} />
+        <Stack.Screen name="MyCart" component={MyCart} />
       </Stack.Navigator>
     </NavigationContainer>
-    //<AppNavigator />
   );
 };
 export default App;

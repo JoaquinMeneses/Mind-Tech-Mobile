@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useState, useCallback} from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
 import SignIn from "../screens/SignIn";
@@ -7,9 +7,11 @@ import MyTabBar from "../components/TabBarCustom";
 import Favorites from "../screens/Favorites";
 import Store from "../screens/Store";
 
+
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
+
   return (
     <Tab.Navigator
       tabBar={(props) => <MyTabBar {...props} />} 

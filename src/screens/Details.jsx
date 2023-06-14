@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -9,15 +9,22 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { Color, Border, FontSize } from "../../GlobalStyles";
+import { Color, Border, FontSize, FontFamily } from "../../GlobalStyles";
 import { IconButton } from "react-native-paper";
 import CartHeader from "../components/CartHeader";
+import axios from  "axios"; 
+import useStore from "../store/store";
 
 const Details = () => {
   const route = useRoute();
   const { item } = route.params;
   const [favoriteItems, setFavoriteItems] = useState([]);
   const navigation = useNavigation();
+  const isFavorite = favoriteItems.includes(item.id);
+  const apiUrl = "https://mind-tech-back.onrender.com/"
+  const [categories, setCategories] = useState()
+  const [brands, setBrands] = useState();
+  const { cartItems, setCartItems } = useStore();
 
   const toggleFavorite = (itemId) => {
     if (favoriteItems.includes(itemId)) {
@@ -27,7 +34,59 @@ const Details = () => {
     }
   };
 
-  const isFavorite = favoriteItems.includes(item.id);
+  const addToCart = (product) => {
+    const newCartItems = [...cartItems, product];
+    setCartItems(newCartItems);
+  };
+
+  const obtainProductCategory = (item) => {
+      let productCategory = categories?.filter(category => category._id == item.category); 
+      if (productCategory?.length > 0) {
+        return productCategory?.[0]?.name;
+      }
+  }
+
+  const obtainProductBrand = (item) => {
+    let productBrand = brands?.filter(brand => brand._id == item.brand); 
+    if (productBrand?.length > 0) {
+      return productBrand?.[0]?.name;
+    }
+  }
+
+  //axios para traer las categorias:
+    useEffect(()=>{
+      axios.get(apiUrl + 'categories')
+      .then(response =>{
+        setCategories(response.data.categories)
+        console.log(response)
+    })
+    .catch(error=>{
+        console.log(error)
+    })
+    }, [])
+
+  //axios para traer las marcas(brand):
+  useEffect(()=>{
+    axios.get(apiUrl + 'brands')
+    .then(response =>{
+      setBrands(response.data.brands)
+    })
+    .catch(error =>{
+      console.log(error)
+    })
+  }, [])
+
+  const formatPrice = (price) => {
+    return price.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+    });
+  };
+
+  //CART FUNCTIONS
+ 
+  
 
   return (
     <View style={{ flex: 1 }}>
@@ -39,14 +98,15 @@ const Details = () => {
           size={20}
           onPress={() => navigation.goBack()}
         />
-        <Text style={styles.categoryName}>{item.category}</Text>
+        <Text style={styles.categoryName}>{obtainProductCategory(item)}</Text>
         <CartHeader />
       </View>
       <ScrollView>
         <Image style={styles.image} source={{ uri: item.images[0] }} />
         <View style={styles.productDetail}>
           <Text style={styles.productName}>{item.name}</Text>
-          <Text style={styles.productPrice}>{"$" + item.price + ".00"}</Text>
+          <Text style={styles.productBrand}>{obtainProductBrand(item)}</Text>
+          <Text style={styles.productPrice}>{formatPrice(item.price)}</Text>
           <IconButton
             style={styles.heartIcon}
             icon={isFavorite ? "heart" : "heart-outline"}
@@ -54,9 +114,10 @@ const Details = () => {
             size={35}
             onPress={() => toggleFavorite(item.id)}
           />
-          <TouchableOpacity style={styles.buttonAddToBag}>
+          <TouchableOpacity style={styles.buttonAddToBag} onPress={() => addToCart(item)}>
             <Text style={styles.textButtonAddToBag}>ADD TO BAG</Text>
           </TouchableOpacity>
+          <Text style={styles.productDescription}>{item.description}</Text>
         </View>
       </ScrollView>
     </View>
@@ -68,7 +129,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
   },
   image: {
-    height: 380,
+    height: 340,
   },
   productDetail: {
     backgroundColor: Color.black,
@@ -78,16 +139,19 @@ const styles = StyleSheet.create({
   },
   productName: {
     color: Color.white,
-    fontSize: FontSize.size_xl,
+    fontSize: FontSize.size_mid,
     letterSpacing: 4,
     paddingBottom: 10,
     fontWeight: "bold",
+    width: "80%",
+    fontFamily: FontFamily.montserratSemibold
   },
   productPrice: {
     color: Color.white,
     fontSize: 30,
     letterSpacing: 4,
     paddingBottom: 20,
+    fontFamily: FontFamily.montserratSemibold
   },
   buttonAddToBag: {
     backgroundColor: "#00a524da",
@@ -130,6 +194,18 @@ const styles = StyleSheet.create({
     top: -15,
     left: -15,
   },
+  productBrand: {
+    color: "#fff",
+    marginBottom: 10,
+    fontFamily: FontFamily.montserratLight,
+  },
+  productDescription: {
+    marginHorizontal: 5,
+    color: "#fff",
+    marginVertical: 40,
+    fontFamily: FontFamily.montserratLight,
+    lineHeight: 23,
+  }
 });
 
 export default Details;

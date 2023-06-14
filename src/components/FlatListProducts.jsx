@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Dimensions, FlatList, TouchableOpacity } from "react-native";
-import { FontSize, FontFamily } from "../../GlobalStyles";
-import { Card, IconButton  } from "react-native-paper";
+import { View, StyleSheet, Dimensions, FlatList, TouchableOpacity,  ActivityIndicator } from "react-native";
+import { FontFamily } from "../../GlobalStyles";
+import { Card, IconButton, Text  } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import useStore from '../store/store';
 
@@ -12,11 +12,27 @@ const ListScrollProducts = () => {
   const numColumns= 2;
   const [favoriteItems, setFavoriteItems] = useState([]);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const maxLength = 40;
+
+  const shortenText = (text) => {
+    if (text.length <= maxLength) {
+      return text; 
+    } else {
+      return text.substring(0, maxLength) + "..."; 
+    }
+  };
 
   useEffect(() => {
     getAllProducts();
     console.log(allProducts)
   }, [getAllProducts]);
+
+  useEffect(() => {
+    if (allProducts?.length > 0) {
+      setLoading(false)
+    }
+  }, [allProducts]);
 
   const toggleFavorite = (itemId) => {
     if (favoriteItems.includes(itemId)) {
@@ -30,11 +46,18 @@ const ListScrollProducts = () => {
       console.log(item);
       navigation.navigate("Details", { item: item });
   };
+
+  const formatPrice = (price) => {
+    return price.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+    });
+  };
   
 
   const renderItem = ({ item }) => {
     const isFavorite = favoriteItems.includes(item._id);
-    console.log(item._id)
     return (
       <View style={styles.item}>
         <Card style={styles.card}>
@@ -44,20 +67,19 @@ const ListScrollProducts = () => {
             source={{ uri: item.images[0] }}
           />
           </TouchableOpacity>
-
-          <Card.Title
-            style={styles.title}
-            title={item.name}
-            subtitle={item.price}
-          />
-
-          <IconButton
-            style={styles.heartIcon}
-            icon={isFavorite ? "heart" : "heart-outline"}
-            color={isFavorite ? "#FF0000" : "#000000"}
-            size={20}
-            onPress={() => toggleFavorite(item._id)}
-          />
+          <Card.Content style={styles.title}>
+            <Text style={styles.name}>{shortenText(item.name)}</Text>
+          </Card.Content>
+          <View>
+            <Text style={styles.price}>{formatPrice(item.price)}</Text>
+            <IconButton
+              style={styles.heartIcon}
+              icon={isFavorite ? "heart" : "heart-outline"}
+              color={isFavorite ? "#FF0000" : "#000000"}
+              size={20}
+              onPress={() => toggleFavorite(item._id)}
+            />
+          </View>
         </Card>
       </View>
     );
@@ -65,6 +87,7 @@ const ListScrollProducts = () => {
 
   return (
     <View style={styles.container}>
+      {loading ? <ActivityIndicator /> :
       <FlatList
         data={allProducts}
         horizontal={false}
@@ -73,14 +96,14 @@ const ListScrollProducts = () => {
         contentContainerStyle={styles.gridContainer}
         key={`flatlist-${numColumns}`}
         numColumns={numColumns}
-      />
+      />}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    height: 200,
+    height: 210,
     width: 154,
   },
   container: {
@@ -98,29 +121,36 @@ const styles = StyleSheet.create({
   },
 
   cover: {
-    height: "70%",
+    height: "60%",
   },
 
   heartIcon: {
-    top: -54,
+    top: -52,
     left: 107,
   },
-  cartIcon: {
-    top: -102,
-    left: 80,
-  },
+
   title: {
-    fontSize: FontSize.size_mini,
-    fontFamily: FontFamily.poppinsMedium,
-    fontWeight: "800",
     textAlign: "left",
-    paddingBottom: 15,
-    alignItems: 'flex-start',
-    position: 'absolute',
-    top: 144,
+    paddingBottom: 1,
+    alignItems: "flex-start",
+    position: "absolute",
+    top: 124,
   },
   coverTouchable: {
-   height: 200,
+    height: 200,
+  },
+  name: {
+    fontSize: 11,
+    fontWeight: "500",
+    fontFamily: FontFamily.poppinsRegular,
+    marginTop: 5,
+  },
+  price: {
+    fontSize: 15,
+    top: -18,
+    left: 15,
+    fontFamily: FontFamily.poppinsMedium,
+    fontWeight: "bold",
   },
 });
 
