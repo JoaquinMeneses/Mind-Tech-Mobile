@@ -40,7 +40,6 @@ const useStore = create((set) => ({
     }
   },
   user: [],
-
   getUser: async (email) => {
     try {
       const response = await axios.get(Url + "users/one?one=" + email);
@@ -48,6 +47,13 @@ const useStore = create((set) => ({
     } catch (error) {
       console.error("Error fetching user:", error);
     }
+  },
+  cartItems: [],
+  setCartItems: (items) => set({ cartItems: items }),
+  removeCartItem: (productId) => {
+    set((state) => ({
+      cartItems: state.cartItems.filter((item) => item._id !== productId),
+    }));
   },
 }));
 

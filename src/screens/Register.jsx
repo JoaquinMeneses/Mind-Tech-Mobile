@@ -10,12 +10,18 @@ import {
 import { Color, Border, FontSize } from "../../GlobalStyles";
 import { TextInput, IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import useStore from "../store/store";
+import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Register() {
   const navigation = useNavigation();
   const [textName, setTextName] = React.useState("");
   const [textEmail, setTextEmail] = React.useState("");
   const [textPassword, setTextPassword] = React.useState("");
+  const { login } = useStore();
+  const apiUrl = "https://mind-tech-back.onrender.com/"
 
   async function handleSubmit() {
     let data = {
@@ -23,6 +29,36 @@ function Register() {
       email: textEmail,
       password: textPassword,
     };
+    axios
+      .post(apiUrl + "users/register", data)
+      .then((res) => {
+        console.log(res.data.message);
+        login(res.data.token);
+        AsyncStorage.setItem("token", res.data.token);
+        AsyncStorage.setItem("user", JSON.stringify(res.data.user));
+        setTextName("")
+        setTextEmail("");
+        setTextPassword("");
+        Alert.alert(
+          'Registered user successfully',
+        );
+        navigation.navigate("User");
+       
+      })
+      .catch((err) => {
+        if (err.response) {
+          console.log(err.response.data.message);
+          Alert.alert(
+            'Wrong Credentials',
+          );
+        } else {
+          console.log(err);
+          Alert.alert(
+            'An error occurred',
+          );
+        }
+      });
+  
     console.log(data);
   }
   const handleLinkToSignIn = () => {

@@ -3,6 +3,7 @@ import { StyleSheet, View, Dimensions, Text } from 'react-native'
 import { Color, FontSize } from "../../GlobalStyles";
 import CartHeader from './CartHeader';
 
+
 function Header() {
   return (
     <View style={styles.headerContainer}>

@@ -1,10 +1,24 @@
 import React, {useState} from 'react';
 import { Searchbar } from 'react-native-paper';
 import { Dimensions, StyleSheet, View } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 
 const SearchBar = () => {
+
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const onChangeSearch = (query) => setSearchQuery(query);
+  
+  const handleSearch = () => {
+    console.log(searchQuery)
+    if (searchQuery !== undefined) {
+      navigation.navigate('Search', { searchQuery: searchQuery });
+    } else {
+      navigation.navigate('Search', "");
+    }
+    
+  };
+  
 
   return (
     <View style={styles.searchContainer}>
@@ -14,10 +28,13 @@ const SearchBar = () => {
         onChangeText={onChangeSearch}
         value={searchQuery}
         inputStyle={styles.inputStyle}
+        onSubmitEditing={handleSearch}
       />
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   searchContainer: {
@@ -29,7 +46,7 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: "#fff",
   },
-  
+ 
 });
 
 export default SearchBar;

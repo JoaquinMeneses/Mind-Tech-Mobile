@@ -1,15 +1,22 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { IconButton, Badge } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 function CartHeader() {
+  const navigation = useNavigation()
+
+  const handleGoToMyCart = () => {
+    navigation.navigate("MyCart");
+  };
+
   return (
     <View style={styles.cart}>
       <IconButton
         icon="cart-outline"
         iconColor={"#000"}
         size={20}
-        onPress={() => console.log("Pressed")}
+        onPress={() => handleGoToMyCart()}
       />
       <Badge style={styles.badge}>3</Badge>
     </View>

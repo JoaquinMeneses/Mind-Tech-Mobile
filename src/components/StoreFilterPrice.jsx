@@ -7,21 +7,22 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { FontSize, FontFamily } from "../../GlobalStyles";
-import { Card, IconButton, Text } from "react-native-paper";
-import SearchBar from "./SearchBar";
-import CarouselHeader from "./CarouselHome";
-import FeaturedProducts from "./FeaturedProducts";
-import { useNavigation } from "@react-navigation/native";
 import useStore from "../store/store";
+import { FontFamily, Color } from "../../GlobalStyles";
+import { Card, IconButton, Text } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import { Divider } from "@rneui/themed";
 
-const ListScrollView = () => {
+function FilterPrice() {
+  const navigation = useNavigation();
   const allProducts = useStore((state) => state.allProducts);
   const getAllProducts = useStore((state) => state.getAllProducts);
+  const [products, setProducts] = useState([]);
+  const [orderPrice, setOrderPrice] = useState("");
+  const [showOptions, setShowOptions] = useState(false);
+  const [loading, setLoading] = useState(true);
   const numColumns = 2;
   const [favoriteItems, setFavoriteItems] = useState([]);
-  const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
   const maxLength = 40;
 
   const shortenText = (text) => {
@@ -32,17 +33,27 @@ const ListScrollView = () => {
     }
   };
 
-
   useEffect(() => {
     getAllProducts();
-    console.log(allProducts);
-  }, [getAllProducts]);
+
+    const productsOrdered = [...allProducts];
+
+    productsOrdered.sort((a, b) => {
+      if (orderPrice === "descendent") {
+        return a.price - b.price;
+      } else {
+        return b.price - a.price;
+      }
+    });
+
+    setProducts(productsOrdered);
+  }, [orderPrice]);
 
   useEffect(() => {
-    if (allProducts?.length > 0) {
+    if (products?.length > 0) {
       setLoading(false);
     }
-  }, [allProducts]);
+  }, [products]);
 
   const toggleFavorite = (itemId) => {
     if (favoriteItems.includes(itemId)) {
@@ -56,13 +67,6 @@ const ListScrollView = () => {
     console.log(item);
     navigation.navigate("Details", { item: item });
   };
-
-  const productsOrdered = allProducts.sort(
-    (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
-  );
-
-  // Renderiza últimos 6 productos
-  const featuredProducts = productsOrdered.slice(0, 6);
 
   const formatPrice = (price) => {
     return price.toLocaleString("en-US", {
@@ -84,6 +88,7 @@ const ListScrollView = () => {
           >
             <Card.Cover style={styles.cover} source={{ uri: item.images[0] }} />
           </TouchableOpacity>
+
           <Card.Content style={styles.title}>
             <Text style={styles.name}>{shortenText(item.name)}</Text>
           </Card.Content>
@@ -103,60 +108,84 @@ const ListScrollView = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        <FlatList
-          data={featuredProducts}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.gridContainer}
-          key={`flatlist-${numColumns}`}
-          numColumns={numColumns}
-          ListHeaderComponent={
-            <>
-              <SearchBar />
-              <CarouselHeader />
-              <FeaturedProducts />
-            </>
-          }
-        />
-      )}
-      
+    <View style={styles.containerFilter}>
+      <IconButton
+        icon="filter-variant"
+        iconColor={"#000"}
+        size={25}
+        onPress={() => {
+          setShowOptions(!showOptions);
+          console.log("pressed filter");
+        }}
+      />
+      {showOptions ? (
+        <View style={styles.containerOrderPrice}>
+          <TouchableOpacity
+            style={styles.buttonPrice}
+            onPress={() => setOrderPrice("descendent")}
+          >
+            <Text style={styles.buttonTitle}>lowest to highest price</Text>
+          </TouchableOpacity>
+          <Divider />
+          <TouchableOpacity
+            style={styles.buttonPrice}
+            onPress={() => setOrderPrice("ascendent")}
+          >
+            <Text style={styles.buttonTitle}>highest to lowest price</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
+      <View style={styles.container}>
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList
+            data={products}
+            horizontal={false}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={styles.gridContainer}
+            key={`flatlist-${numColumns}`}
+            numColumns={numColumns}
+          />
+        )}
+      </View>
     </View>
   );
-};
-
+}
 const styles = StyleSheet.create({
+  
+  containerFilter: {
+    alignItems: "flex-end",
+  },
+  
   card: {
     height: 210,
     width: 154,
   },
   container: {
-    marginBottom: 140,
+    flex: 1,
+    marginBottom: 60,
     paddingTop: 10,
-    alignItems: "center",
-    width: Dimensions.get("window").width,
-    flexDirection: "row",
-    justifyContent: "flex-start",
+    left: 8,
   },
   gridContainer: {
     padding: 1,
-    alignItems: "center",
   },
   item: {
-    width: Dimensions.get("window").width / 2 - 30,
-    height: 210,
-    margin: 10,
+    marginBottom: 20,
+    width: Dimensions.get("window").width / 2 - 16,
   },
+
   cover: {
     height: "60%",
   },
+
   heartIcon: {
     top: -52,
     left: 107,
   },
+  
   title: {
     textAlign: "left",
     paddingBottom: 1,
@@ -180,6 +209,18 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.poppinsMedium,
     fontWeight: "bold",
   },
+  containerOrderPrice: {
+    position: "absolute",
+    zIndex: 999,
+    backgroundColor: Color.gainsboro,
+    top: 50,
+    padding: 10,
+    borderRadius: 10,
+  },
+  buttonTitle: {
+    fontSize: 16,
+    padding: 10,
+  },
 });
 
-export default ListScrollView;
+export default FilterPrice;

@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "./../components/Header";
 import { View, StyleSheet, Dimensions } from "react-native";
-import TabListStore from "../components/TabListStore";
+import FiltersStore from "../components/FiltersStore";
 
 
 function Store() {
@@ -9,7 +9,7 @@ function Store() {
 
     <View style={styles.containerHome}>
       <Header />
-      <TabListStore />
+      <FiltersStore />
     </View>
   );
 }
